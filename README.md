@@ -3,14 +3,14 @@
 Shows cryptocurrencies informations on the i3blocks for a given time period and currency. 
 
 Blocklet basic display:
-COIN: CURRENT_PRICE  CURRENCY  CHANGE_ABS   CHANGE_PERC
+![](example.png)
 
 Where:
-COIN_SYMBOL   = Cryptocurrency code
-CURRENCY      = Currency code
-CURRENT_PRICE = End price for the period
-CHANGE_ABS    = Absolute change 
-CHANCE_PERC   = Percentual change 
+- COIN_SYMBOL   = Cryptocurrency code
+- CURRENCY      = Currency code
+- CURRENT_PRICE = End price for the period
+- CHANGE_ABS    = Absolute change 
+- CHANCE_PERC   = Percentual change 
 
 
 ## Setup / Usage
