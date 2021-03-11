@@ -36,10 +36,12 @@ period = '24h'
 
 For the complete API reference, visit: https://github.com/chubin/rate.sx/blob/master/README.md
 
+
 ## Dependencies
 
 - base gnu utilities (curl, sed, awk)
 - python3
+
 
 ## Known Bugs
 
