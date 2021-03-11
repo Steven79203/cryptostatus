@@ -1,0 +1,38 @@
+!/usr/bin/env python
+
+import subprocess
+import re 
+
+coin = 'xmr'
+currency = 'brl'
+period = '24h'
+
+cmd = "curl -s -f {}.rate.sx/{}@{} | sed -n '/begin/p;/avg/p'" .format(currency,coin,period)
+
+data = subprocess.check_output(cmd, shell=True)
+#print(data)
+
+pattern1 = r"(?<=end:\\x1b\[0m\s)[0-9]*[\.]?[0-9]*\s"
+pattern2 = r"(?<=change:\\x1b\[0m\s\\x1b\[3[1|2]m)[\+|\-][0-9]*\.[0-9]*"
+pattern3 = r"(?<=\(\\x1b\[3[1|2]m)[\+|\-][0-9]*\.[0-9]*\%" 
+
+value = re.search(pattern1,str(data)).group()
+change_abs = re.search(pattern2,str(data)).group()
+change_perc = re.search(pattern3,str(data)).group()
+signal = re.search(r'^[\+|\-]',change_perc).group()
+
+color = {
+        "+":"<span color='green'>{}</span>",
+        "-":"<span color='red'>{}</span>"
+        }
+
+cabs = color[signal].format(change_abs)
+cperc = color[signal].format(change_perc)
+
+print("{0}: {1} {2}  {3}  {4}  {5}".format(
+                                            coin.upper(),
+                                            value, 
+                                            currency.upper(), 
+                                            cabs, 
+                                            cperc, 
+                                            period))
