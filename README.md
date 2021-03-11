@@ -1,4 +1,4 @@
-# crptstatus-blocklet
+# cryptostatus-blocklet
 
 Shows cryptocurrencies informations on the i3blocks for a given time period and currency. 
 
