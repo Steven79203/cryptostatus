@@ -17,11 +17,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-
 import subprocess
 import re
 
-coin, currency, period = 'xmr', 'brl', '24h'
+coin, currency, period = 'eth', 'brl', '24h' 
  
 cmd = "curl -s -f '{}.rate.sx/{}@{}' | sed -n '/begin/p;/avg/p'".format(currency, coin, period) 
   
@@ -30,7 +29,7 @@ data = subprocess.check_output(cmd,shell=True)
 pattern_strip = r'(\\x1b\[[0-9]*m)|(\\n)|(\/)|(\\.{3})'
 
 patterns = [        
-        r'(?<=end:\s)\$?\d*\.\d*',
+        r'(?<=end:\s)\$?\d*\.?\d*',
         r'[\+|\-]\d*\.\d*',
         r'[\+|\-]\d*\.\d*\%'
 ]
