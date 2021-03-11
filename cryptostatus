@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# Show basic cryptocurrency informations on i3blocks
+# Simple cryptocurrency status blocklet for i3blocks using rate.sx API
 
 # Copyright 2021 Estevão Santana
 #
@@ -17,42 +17,47 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+
 import subprocess
-import re 
+import re
 
-coin = 'btc'
-currency = 'brl'
-period = '24h'
+coin, currency, period = 'xmr', 'brl', '24h'
+ 
+cmd = "curl -s -f '{}.rate.sx/{}@{}' | sed -n '/begin/p;/avg/p'".format(currency, coin, period) 
+  
+data = subprocess.check_output(cmd,shell=True)
 
-cmd = "curl -s -f {}.rate.sx/{}@{} | sed -n '/begin/p;/avg/p'" .format(currency,coin,period)
+pattern_strip = r'(\\x1b\[[0-9]*m)|(\\n)|(\/)|(\\.{3})'
 
-data = subprocess.check_output(cmd, shell=True)
-
-patterns = [
-            r"(?<=end:\\x1b\[0m\s)[0-9]*[\.]?[0-9]*\s",
-            r"(?<=change:\\x1b\[0m\s\\x1b\[3[1|2]m)[\+|\-][0-9]*\.[0-9]*",
-            r"(?<=\(\\x1b\[3[1|2]m)[\+|\-][0-9]*\.[0-9]*\%",
-            ]
+patterns = [        
+        r'(?<=end:\s)\$?\d*\.\d*',
+        r'[\+|\-]\d*\.\d*',
+        r'[\+|\-]\d*\.\d*\%'
+]
 
 vls = list()
 
+data_strip = re.sub(pattern_strip,'',str(data))
+
 for px in patterns:
-    vls.append(re.search(px,str(data)).group())
+    vls.append(re.search(px,data_strip).group())
 
-color = {"+":"green", "-":"red"}
-c = color[re.search(r'^[\+|\-]',vls[2]).group()]
+signal = re.search(r'^[\+|\-]',vls[1]).group()
 
-pango = "<span color='{}'>{}</span>"
+color = {'-':'red','+':'green'}
+span = "<span color='{}'>{}</span>"
+cabs = span.format(color[signal],vls[1])
+cperc = span.format(color[signal],vls[2])
 
-cabs = pango.format(c,vls[1])
-cperc = pango.format(c,vls[2])
+display = '{}: {}  {}  {}  {}  {}'.format(
+    coin.upper(),
+    vls[0], 
+    currency.upper(), 
+    cabs, 
+    cperc, 
+    period
+    ) 
 
-print("{0}: {1} {2}  {3}  {4}  {5}".format(
-                                            coin.upper(),
-                                            vls[0], 
-                                            currency.upper(), 
-                                            cabs, 
-                                            cperc, 
-                                            period))
+print(display)
 
 
