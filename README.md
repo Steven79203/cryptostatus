@@ -3,7 +3,7 @@
 Shows cryptocurrencies informations on the i3blocks for a given time period and currency. 
 
 Blocklet basic display:
-![](example.png)
+![](cryptostatus.png)
 
 Where:
 - COIN_SYMBOL   = Cryptocurrency code
