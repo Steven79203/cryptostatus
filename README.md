@@ -43,5 +43,6 @@ For the complete API reference, visit: https://github.com/chubin/rate.sx/blob/ma
 
 ## Known Bugs
 
-This script is just a proof of concept and for studies purposes. 
+This script is just a proof of concept and for studies purposes.
+  
 
