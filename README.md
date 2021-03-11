@@ -11,6 +11,7 @@ Where:
 - CURRENT_PRICE = End price for the period
 - CHANGE_ABS    = Absolute change 
 - CHANCE_PERC   = Percentual change 
+- PERIOD        = Time period 
 
 
 ## Setup / Usage
