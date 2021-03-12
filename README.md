@@ -19,22 +19,14 @@ i3blocks configuration:
 ```
 [cryptostatus]
 command=$SCRIPT_DIR/cryptostatus
+COIN=xmr
+CURRENCY=brl
+PERIOD=24h
 interval=60
 markup=pango
 ```
 
-Edit these variables in the main script to set the reference currency, crypto and time period  
-
-Example:
-
-```
-coin = 'eth'
-currency = 'usd'
-period = '24h'
-```
-
 For the complete API reference, visit: https://github.com/chubin/rate.sx/blob/master/README.md
-
 
 ## Dependencies
 
@@ -51,7 +43,5 @@ For the complete API reference, visit: https://github.com/chubin/rate.sx/blob/ma
 
 ## TODO
 
-- Import the config variables from the i3blocks config file to avoid editing the main script file
-- Change to a propper API that returns data on JSON format, which is easier to handle
-
+- Select more than a coin to alternate the displays over time
 

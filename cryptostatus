@@ -17,17 +17,18 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import subprocess
-import re
+import subprocess, re
+from os import environ as env
 
-coin, currency, period = 'eth', 'brl', '24h' 
- 
-cmd = "curl -s -f '{}.rate.sx/{}@{}' | sed -n '/begin/p;/avg/p'".format(currency, coin, period) 
-  
+# Set veriables from the os environment 
+coin, currency, period = env.get('COIN'), env.get('CURRENCY'), env.get('PERIOD') 
+
+# Get the information from the API
+cmd = "curl -s -f '{}.rate.sx/{}@{}' | sed -n '/begin/p;/avg/p'".format(currency, coin, period)   
 data = subprocess.check_output(cmd,shell=True)
 
+# Regex pattern to strip the unnecessary junk
 pattern_strip = r'(\\x1b\[[0-9]*m)|(\\n)|(\/)|(\\.{3})'
-
 patterns = [        
         r'(?<=end:\s)\$?\d*\.?\d*',
         r'[\+|\-]\d*\.\d*',
@@ -35,7 +36,6 @@ patterns = [
 ]
 
 vls = list()
-
 data_strip = re.sub(pattern_strip,'',str(data))
 
 for px in patterns:
@@ -58,5 +58,3 @@ display = '{}: {}  {}  {}  {}  {}'.format(
     ) 
 
 print(display)
-
-
