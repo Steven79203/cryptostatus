@@ -22,6 +22,7 @@ from os import environ as env
 
 # Set veriables from the os environment 
 coin, currency, period = env.get('COIN'), env.get('CURRENCY'), env.get('PERIOD') 
+#coin, currency, period = 'xmr', 'brl', '24h'
 
 # Get the information from the API
 cmd = "curl -s -f '{}.rate.sx/{}@{}' | sed -n '/begin/p;/avg/p'".format(currency, coin, period)   
@@ -43,8 +44,9 @@ for px in patterns:
 
 signal = re.search(r'^[\+|\-]',vls[1]).group()
 
-color = {'-':'red','+':'green'}
+color = {'-':'#FF0000','+':'#00FF00'}
 span = "<span color='{}'>{}</span>"
+
 cabs = span.format(color[signal],vls[1])
 cperc = span.format(color[signal],vls[2])
 
@@ -56,5 +58,5 @@ display = '{}: {}  {}  {}  {}  {}'.format(
     cperc, 
     period
     ) 
-
+ 
 print(display)
