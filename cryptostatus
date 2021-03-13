@@ -41,7 +41,7 @@ def stripData(data):
 def getValues(data_str, params):
     patterns = [        
         r'(?<=end:\s)\$?\d*\.\d*',
-        r'[\+|\-]\d*\.\d*\s',
+        r'[\+|\-]\d*\.?\d*\s',
         r'[\+|\-]\d*\.\d*\%'
     ]
 
