@@ -4,12 +4,12 @@ Shows a cryptocurrency informations on a i3blocks blocklet for a given time peri
 Blocklet basic display:
 - ![](cryptostatus.png)
 
-- COIN          = Cryptocurrency code
-- PRICE         = Final price for the period
-- CURRENCY      = Currency code
-- CHANGE_ABS    = Absolute change in the selected currency 
-- CHANCE_PERC   = Percentual change 
-- PERIOD        = Time range. 
+## Informations
+- Currenty price
+- Currency code
+- Absolute change in the selected currency 
+- Percentual change 
+- Period. 
 
 
 ## Setup / Usage
@@ -19,11 +19,12 @@ i3blocks configuration:
 ```
 [cryptostatus]
 command=$SCRIPT_DIR/cryptostatus
-COIN=xmr
-CURRENCY=brl
-PERIOD=24h
-interval=60
 markup=pango
+COIN=xmr            # Cryptocurrency
+CURRENCY=brl        # Reference currency
+PERIOD=24h          # Period
+SHOW_CHANGE=true    # Show change informations for the period
+interval=60         # Interval between new queries
 ```
 
 For the complete API reference, visit: https://github.com/chubin/rate.sx/blob/master/README.md
