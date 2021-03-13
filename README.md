@@ -5,7 +5,7 @@ Blocklet basic display:
 - ![](cryptostatus.png)
 
 ## Informations
-- Currenty price
+- Current price
 - Currency code
 - Absolute change in the selected currency 
 - Percentual change 
