@@ -20,11 +20,11 @@ i3blocks configuration:
 [cryptostatus]
 command=$SCRIPT_DIR/cryptostatus
 markup=pango
-COIN=xmr            # Cryptocurrency
-CURRENCY=brl        # Reference currency
-PERIOD=24h          # Period
-SHOW_CHANGE=true    # Show change informations for the period
-interval=60         # Interval between new queries
+COIN=xmr                 # Cryptocurrency
+CURRENCY=brl             # Reference currency
+PERIOD=24h               # Period
+SHOW_CHANGE=true/false   # Show change informations for the period
+interval=60              # Interval between new queries
 ```
 
 For the complete API reference, visit: https://github.com/chubin/rate.sx/blob/master/README.md
@@ -38,11 +38,9 @@ For the complete API reference, visit: https://github.com/chubin/rate.sx/blob/ma
 ## Known Bugs/Issues and Comments
 
 - This script is just a proof of concept and for study purposes. I know there's more efficient ways to do this (Ex: JSON)
-- The regex filtering is a workaround to show the proper text color since the i3blocks only parses pango markup. ANSI color codes are show as unparsed literal strings.
-- Some combinations of currencies/cryptos may break the regex patterns that filter the ANSI codes from the terminal.
-
 
 ## TODO
 
-- Select more than a coin to alternate the displays over time
-
+- Show custom icons for the coins. 
+- Select more than a coin and change the display over time or by mouseclick
+-  
