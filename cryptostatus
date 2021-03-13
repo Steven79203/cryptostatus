@@ -31,21 +31,16 @@ def getParams(envs):
 
 # Get raw data from the API. 
 def getData(params):
-    cmd = "curl -s -f '{}.rate.sx/{}@{}' | sed '/begin/p;/avg/p'".format(
+    cmd = "curl -s -f '{}.rate.sx/{}@{}?qT' | sed '/begin/p;/avg/p'".format(
         params['CURRENCY'], params['COIN'], params['PERIOD']
     )
-    return subprocess.check_output(cmd,shell=True)
-
-# Strips the ANSI codes from the data 
-def stripData(data):
-    pattern = r'(\\x1b\[[0-9]*m)|(\\n)|(\/)|(\\.{3})'
-    return re.sub(pattern,'',str(data))
+    return str(subprocess.check_output(cmd,shell=True))
 
 # Return the crypto status values on a list. 
 def getValues(data_str, params):
     patterns = [        
         r'(?<=end:\s)\$?\d*\.\d*',
-        r'[\+|\-]\d*\.?\d*\s',
+        r'(?<=change:\s)[\+|\-]\d*\.?\d*\s',
         r'(?<=\()[\+|\-]\d*\.\d*\%(?=\))'
     ]
 
@@ -73,7 +68,7 @@ def getValues(data_str, params):
     return vls        
     
 envs = getParams(['COIN', 'CURRENCY', 'PERIOD', 'SHOW_CHANGE'])
-values = getValues(stripData(getData(envs)), envs)
+values = getValues(getData(envs), envs)
 
 if envs['SHOW_CHANGE'] == 'true':
     print('  '.join(values))
