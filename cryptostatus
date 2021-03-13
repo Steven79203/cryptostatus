@@ -21,6 +21,7 @@ import subprocess
 import re
 from os import environ as env
 
+# Get parameters from the environment variables passed from i3blocks config file
 def getParams(envs):
     values = dict()
     for p in envs: 
@@ -28,16 +29,19 @@ def getParams(envs):
        values.update({p:value})
     return values
 
+# Get raw data from the API. 
 def getData(params):
     cmd = "curl -s -f '{}.rate.sx/{}@{}' | sed '/begin/p;/avg/p'".format(
         params['CURRENCY'], params['COIN'], params['PERIOD']
     )
     return subprocess.check_output(cmd,shell=True)
 
+# Strips the ANSI codes from the data 
 def stripData(data):
     pattern = r'(\\x1b\[[0-9]*m)|(\\n)|(\/)|(\\.{3})'
     return re.sub(pattern,'',str(data))
 
+# Return the crypto status values on a list. 
 def getValues(data_str, params):
     patterns = [        
         r'(?<=end:\s)\$?\d*\.\d*',
@@ -51,8 +55,12 @@ def getValues(data_str, params):
     for px in patterns:
         vls.append(re.search(px,data_str).group())
 
+    # The list here is like ['COIN','VALUE','CABS','CPERC']
+    # The command above just inserts the currency code after 'VALUE', or in place of 'CABS' 
     vls.insert(2,params['CURRENCY'].upper())
+    # ['COIN','VALUE','CURRENCY','CABS','CPERC']
 
+    # Check the signal of the change to set the proper font color
     signal = re.search(r'^[\+|\-]',vls[3]).group()
     color = {'-':'#FF0000','+':'#00FF00'}
     span = "<span color='{}'>{}</span>"
@@ -61,10 +69,10 @@ def getValues(data_str, params):
     vls[4] = span.format(color[signal],vls[4])
     vls.append(params['PERIOD'])
 
+    # Return list = ['COIN','VALUE','CURRENCY','CABS','CPERC','PERIOD']
     return vls        
     
-params = ['COIN', 'CURRENCY', 'PERIOD','SHOW_CHANGE']
-envs = getParams(params)
+envs = getParams(['COIN', 'CURRENCY', 'PERIOD', 'SHOW_CHANGE'])
 values = getValues(stripData(getData(envs)), envs)
 
 if envs['SHOW_CHANGE'] == 'true':
