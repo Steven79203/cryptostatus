@@ -56,11 +56,11 @@ def getValues(data_str, params):
         vls.append(re.search(px,data_str).group())
 
     # The list here is like ['COIN','VALUE','CABS','CPERC']
-    # The command above just inserts the currency code after 'VALUE', or in place of 'CABS' 
+    # The command below just inserts the currency code after 'VALUE', or in place of 'CABS' 
     vls.insert(2,params['CURRENCY'].upper())
     # ['COIN','VALUE','CURRENCY','CABS','CPERC']
 
-    # Check the signal of the change to set the proper font color
+    # Check the signal of the change to set the proper font color by pango markup
     signal = re.search(r'^[\+|\-]',vls[3]).group()
     color = {'-':'#FF0000','+':'#00FF00'}
     span = "<span color='{}'>{}</span>"
