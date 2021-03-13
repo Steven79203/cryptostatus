@@ -42,7 +42,7 @@ def getValues(data_str, params):
     patterns = [        
         r'(?<=end:\s)\$?\d*\.\d*',
         r'[\+|\-]\d*\.?\d*\s',
-        r'[\+|\-]\d*\.\d*\%'
+        r'(?<=\()[\+|\-]\d*\.\d*\%(?=\))'
     ]
 
     vls = list()
@@ -65,8 +65,7 @@ def getValues(data_str, params):
     
 params = ['COIN', 'CURRENCY', 'PERIOD','SHOW_CHANGE']
 envs = getParams(params)
-data = stripData(getData(envs))
-values = getValues(data, envs)
+values = getValues(stripData(getData(envs)), envs)
 
 if envs['SHOW_CHANGE'] == 'true':
     print('  '.join(values))
