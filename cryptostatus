@@ -1,62 +1,58 @@
-#!/usr/bin/env python
+#!/usr/bin/env python 
 
-# Simple cryptocurrency status blocklet for i3blocks using rate.sx API
-
-# Copyright 2021 Estevão Santana
-#
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-import subprocess, re
+import subprocess
+import re
 from os import environ as env
 
-# Set veriables from the os environment 
-coin, currency, period, change = env.get('COIN'), env.get('CURRENCY'), env.get('PERIOD'), ''
-SHOW_CHANGE = env.get('SHOW_CHANGE') 
+def getParams(envs):
+    values = dict()
+    for p in envs: 
+       value = env.get(p).strip()
+       values.update({p:value})
+    return values
 
-# Get the information from the API
-cmd = "curl -s -f '{}.rate.sx/{}@{}' | sed -n '/begin/p;/avg/p'".format(currency, coin, period)   
-data = subprocess.check_output(cmd,shell=True)
+def getData(params):
+    cmd = "curl -s -f '{}.rate.sx/{}@{}' | sed '/begin/p;/avg/p'".format(
+        params['CURRENCY'], params['COIN'], params['PERIOD']
+    )
+    return subprocess.check_output(cmd,shell=True)
 
-# Regex pattern to strip the unnecessary junk
-pattern_strip = r'(\\x1b\[[0-9]*m)|(\\n)|(\/)|(\\.{3})'
-patterns = [        
-        r'(?<=end:\s)\$?\d*\.?\d*',
-        r'[\+|\-]\d*\.\d*',
+def stripData(data):
+    pattern = r'(\\x1b\[[0-9]*m)|(\\n)|(\/)|(\\.{3})'
+    return re.sub(pattern,'',str(data))
+
+def getValues(data_str, params):
+    patterns = [        
+        r'(?<=end:\s)\$?\d*\.\d*',
+        r'[\+|\-]\d*\.\d*\s',
         r'[\+|\-]\d*\.\d*\%'
-]
+    ]
 
-vls = list()
-data_strip = re.sub(pattern_strip,'',str(data))
+    vls = list()
+    vls.append(params['COIN'].upper() + ':')
 
-for px in patterns:
-    vls.append(re.search(px,data_strip).group())
+    for px in patterns:
+        vls.append(re.search(px,data_str).group())
 
-signal = re.search(r'^[\+|\-]',vls[1]).group()
+    vls.insert(2,params['CURRENCY'].upper())
 
-color = {'-':'#FF0000','+':'#00FF00'}
-span = "<span color='{}'>{}</span>"
+    signal = re.search(r'^[\+|\-]',vls[3]).group()
+    color = {'-':'#FF0000','+':'#00FF00'}
+    span = "<span color='{}'>{}</span>"
 
-if SHOW_CHANGE == 'true':
-    cabs = span.format(color[signal],vls[1])
-    cperc = span.format(color[signal],vls[2])
-    change = "{}  {}  {}".format(cabs,cperc,period)
+    vls[3] = span.format(color[signal],vls[3])
+    vls[4] = span.format(color[signal],vls[4])
+    vls.append(params['PERIOD'])
 
-display = ' {}: {}  {}  {}'.format(
-    coin.upper(),
-    vls[0], 
-    currency.upper(), 
-    change
-    ) 
- 
-print(display)
+    return vls        
+    
+params = ['COIN', 'CURRENCY', 'PERIOD','SHOW_CHANGE']
+envs = getParams(params)
+data = stripData(getData(envs))
+values = getValues(data, envs)
+
+if envs['SHOW_CHANGE'] == 'true':
+    print('  '.join(values))
+else:
+    print('  '.join(values[:3]))
+
