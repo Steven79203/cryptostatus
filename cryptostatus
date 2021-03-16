@@ -19,15 +19,15 @@
 
 import subprocess
 import re
-from os import environ as env
 from sys import argv as arg
 
 # Get parameters from the environment variables passed from i3blocks config file
 def getParams(envs):
     values = dict()
-    for p in envs: 
-       value = env.get(p).strip()
-       values.update({p:value})
+    i = 1
+    for e in envs: 
+       values.update({e:arg[i]})
+       i += 1
     return values
 
 # Get raw data from the API. 
@@ -59,23 +59,13 @@ def getValues(data_str, params):
     # Check the signal of the change to set the proper font color by pango markup
     signal = re.search(r'^[\+|\-]',vls[3]).group()
     color = {'-':'%{F#FF0000}','+':'%{F#00FF00}'}
-
-    change = '{} {} {}'
-
-    vls[3] = change.format(color[signal],vls[3],'%{F-}')
-    vls[4] = change.format(color[signal],vls[4],'%{F-}')
-    vls.append(params['PERIOD'])
-
+    vls.insert(3, color[signal])
+    vls += ['%{F-}', params['PERIOD']]
+    
     # Return list = ['COIN','VALUE','CURRENCY','CABS','CPERC','PERIOD']
     return vls        
     
-#envs = getParams(['COIN', 'CURRENCY', 'PERIOD', 'SHOW_CHANGE'])
-
-envs = {'COIN':arg[1],
-        'CURRENCY':arg[2],
-        'PERIOD':arg[3],
-        'SHOW_CHANGE':arg[4]
-        }
+envs = getParams(['COIN', 'CURRENCY', 'PERIOD', 'SHOW_CHANGE'])
 values = getValues(getData(envs), envs)
 #ul,ulc = '%{u#ff7b00}', '%{u}'
 
