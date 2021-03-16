@@ -1,6 +1,6 @@
 #!/usr/bin/env python 
 
-# Simple cryptocurrency status display for i3blocks using rate.sx API
+# Simple cryptocurrency informations for status bar using rate.sx API. Polybar fork
 
 # Copyright 2021 Estevão Santana
 #
