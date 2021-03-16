@@ -56,7 +56,7 @@ def getValues(data_str, params):
     vls.insert(2,params['CURRENCY'].upper())
     # ['COIN','VALUE','CURRENCY','CABS','CPERC']
 
-    # Check the signal of the change to set the proper font color by pango markup
+    # Check the signal of the change to set the proper foreground color
     signal = re.search(r'^[\+|\-]',vls[3]).group()
     color = {'-':'%{F#FF0000}','+':'%{F#00FF00}'}
     vls.insert(3, color[signal])
@@ -67,7 +67,6 @@ def getValues(data_str, params):
     
 envs = getParams(['COIN', 'CURRENCY', 'PERIOD', 'SHOW_CHANGE'])
 values = getValues(getData(envs), envs)
-#ul,ulc = '%{u#ff7b00}', '%{u}'
 
 if envs['SHOW_CHANGE'] == 'true':
     print(' '.join(values))
