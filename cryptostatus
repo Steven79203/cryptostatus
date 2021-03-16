@@ -20,6 +20,7 @@
 import subprocess
 import re
 from os import environ as env
+from sys import argv as arg
 
 # Get parameters from the environment variables passed from i3blocks config file
 def getParams(envs):
@@ -57,21 +58,29 @@ def getValues(data_str, params):
 
     # Check the signal of the change to set the proper font color by pango markup
     signal = re.search(r'^[\+|\-]',vls[3]).group()
-    color = {'-':'#FF0000','+':'#00FF00'}
-    span = "<span color='{}'>{}</span>"
+    color = {'-':'%{F#FF0000}','+':'%{F#00FF00}'}
 
-    vls[3] = span.format(color[signal],vls[3])
-    vls[4] = span.format(color[signal],vls[4])
+    change = '{} {} {}'
+
+    vls[3] = change.format(color[signal],vls[3],'%{F-}')
+    vls[4] = change.format(color[signal],vls[4],'%{F-}')
     vls.append(params['PERIOD'])
 
     # Return list = ['COIN','VALUE','CURRENCY','CABS','CPERC','PERIOD']
     return vls        
     
-envs = getParams(['COIN', 'CURRENCY', 'PERIOD', 'SHOW_CHANGE'])
+#envs = getParams(['COIN', 'CURRENCY', 'PERIOD', 'SHOW_CHANGE'])
+
+envs = {'COIN':arg[1],
+        'CURRENCY':arg[2],
+        'PERIOD':arg[3],
+        'SHOW_CHANGE':arg[4]
+        }
 values = getValues(getData(envs), envs)
+#ul,ulc = '%{u#ff7b00}', '%{u}'
 
 if envs['SHOW_CHANGE'] == 'true':
-    print('  '.join(values))
+    print(' '.join(values))
 else:
-    print('  '.join(values[:3]))
+    print(' '.join(values[:3]))
 
