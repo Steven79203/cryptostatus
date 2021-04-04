@@ -36,6 +36,15 @@ def getData(params):
     )
     return str(subprocess.check_output(cmd,shell=True))
 
+def getFormated(value):
+    color = {'-':'#FF0000','+':'#00FF00'}
+    span = "<span color='{}'>'"
+    if '-' in value:
+        sym = '-'
+    else:
+        sym = '+'
+    return span.format(color[sym])
+
 # Return the crypto status values on a list. 
 def getValues(data_str, params):
     patterns = [        
@@ -43,28 +52,18 @@ def getValues(data_str, params):
         r'(?<=change:\s)[\+|\-]\d*\.?\d*\s',
         r'(?<=\()[\+|\-]\d*\.\d*\%(?=\))'
     ]
-
+    
     vls = list()
     vls.append(params['COIN'].upper() + ':')
-
+    
     for px in patterns:
         vls.append(re.search(px,data_str).group())
-
-    # The list here is like ['COIN','VALUE','CABS','CPERC']
-    # The command below just inserts the currency code after 'VALUE', or in place of 'CABS' 
+    
     vls.insert(2,params['CURRENCY'].upper())
-    # ['COIN','VALUE','CURRENCY','CABS','CPERC']
-
-    # Check the signal of the change to set the proper font color by pango markup
-    signal = re.search(r'^[\+|\-]',vls[3]).group()
-    color = {'-':'#FF0000','+':'#00FF00'}
-    span = "<span color='{}'>{}</span>"
-
-    vls[3] = span.format(color[signal],vls[3])
-    vls[4] = span.format(color[signal],vls[4])
+    vls.insert(3,getFormated(vls[3]))
+    vls.append("</span>")
     vls.append(params['PERIOD'])
-
-    # Return list = ['COIN','VALUE','CURRENCY','CABS','CPERC','PERIOD']
+   
     return vls        
     
 envs = getParams(['COIN', 'CURRENCY', 'PERIOD', 'SHOW_CHANGE'])
