@@ -59,10 +59,8 @@ def getValues(data_str, params):
     for px in patterns:
         vls.append(re.search(px,data_str).group())
     
-    vls.insert(2,params['CURRENCY'].upper())
-    vls.insert(3,getFormated(vls[3]))
-    vls.append("</span>")
-    vls.append(params['PERIOD'])
+    vls.insert(2,params['CURRENCY'].upper() + ' ' + getFormated(vls[3]))
+    vls.append("</span> " + params['PERIOD'])
    
     return vls        
     
